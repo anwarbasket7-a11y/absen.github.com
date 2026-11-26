@@ -1,0 +1,1122 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplikasi Absensi Siswa</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+header {
+    background: #0f766e;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header p {
+    margin: 7px 0 0;
+}
+
+.container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.08);
+}
+
+h2 {
+    margin-top: 0;
+    color: #0f766e;
+}
+
+input, select, button {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    margin: 5px;
+}
+
+input, select {
+    min-width: 180px;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    color: white;
+    background: #0f766e;
+}
+
+button:hover {
+    opacity: .85;
+}
+
+.btn-danger {
+    background: #dc2626;
+}
+
+.btn-warning {
+    background: #d97706;
+}
+
+.btn-blue {
+    background: #2563eb;
+}
+
+.btn-gray {
+    background: #475569;
+}
+
+.statistik {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+.stat {
+    padding: 18px;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+}
+
+.hadir {
+    background: #16a34a;
+}
+
+.sakit {
+    background: #eab308;
+}
+
+.izin {
+    background: #2563eb;
+}
+
+.alpa {
+    background: #dc2626;
+}
+
+.terlambat {
+    background: #9333ea;
+}
+
+.stat h3 {
+    margin: 0;
+}
+
+.stat p {
+    font-size: 25px;
+    margin: 8px 0 0;
+    font-weight: bold;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    border: 1px solid #cbd5e1;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background: #0f766e;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+.badge {
+    padding: 6px 10px;
+    border-radius: 5px;
+    color: white;
+    display: inline-block;
+}
+
+.badge-hadir {
+    background: #16a34a;
+}
+
+.badge-sakit {
+    background: #eab308;
+}
+
+.badge-izin {
+    background: #2563eb;
+}
+
+.badge-alpa {
+    background: #dc2626;
+}
+
+.badge-terlambat {
+    background: #9333ea;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.form-grid input,
+.form-grid select {
+    width: 100%;
+    margin: 0;
+}
+
+.login {
+    max-width: 400px;
+    margin: 100px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.15);
+    text-align: center;
+}
+
+.login input {
+    width: 100%;
+    margin: 8px 0;
+}
+
+.login button {
+    width: 100%;
+    margin: 8px 0;
+}
+
+#app {
+    display: none;
+}
+
+@media(max-width: 800px) {
+    .statistik {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 500px) {
+    .statistik {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= LOGIN ================= -->
+
+<div id="loginPage" class="login">
+
+    <h2>🔐 LOGIN GURU</h2>
+
+    <p>Aplikasi Absensi Siswa</p>
+
+    <input type="text" id="username" placeholder="Username">
+
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">LOGIN</button>
+
+    <p id="loginError" style="color:red;"></p>
+
+    <small>
+        Username: <b>admin</b><br>
+        Password: <b>12345</b>
+    </small>
+
+</div>
+
+
+<!-- ================= APLIKASI ================= -->
+
+<div id="app">
+
+<header>
+
+    <h1>🏫 APLIKASI ABSENSI SISWA</h1>
+
+    <p>Sistem Informasi Kehadiran Siswa</p>
+
+</header>
+
+
+<div class="container">
+
+<!-- IDENTITAS -->
+
+<div class="card">
+
+    <h2>🏫 Identitas Sekolah</h2>
+
+    <div class="form-grid">
+
+        <input
+            type="text"
+            id="namaSekolah"
+            placeholder="Nama Sekolah"
+            value="MAN 1 Kota Cirebon">
+
+        <input
+            type="text"
+            id="namaGuru"
+            placeholder="Nama Guru">
+
+        <input
+            type="text"
+            id="tahunAjaran"
+            placeholder="Tahun Ajaran"
+            value="2026/2027">
+
+    </div>
+
+</div>
+
+
+<!-- TAMBAH SISWA -->
+
+<div class="card">
+
+<h2>👨‍🎓 Data Siswa</h2>
+
+<div class="form-grid">
+
+<input
+    type="text"
+    id="nis"
+    placeholder="NIS">
+
+<input
+    type="text"
+    id="namaSiswa"
+    placeholder="Nama Siswa">
+
+<select id="kelas">
+
+    <option value="">-- Pilih Kelas --</option>
+
+    <option>X-1</option>
+    <option>X-2</option>
+    <option>X-3</option>
+    <option>XI-1</option>
+    <option>XI-2</option>
+    <option>XI-3</option>
+    <option>XII-1</option>
+    <option>XII-2</option>
+    <option>XII-3</option>
+
+</select>
+
+</div>
+
+<button onclick="tambahSiswa()">
+➕ Tambah Siswa
+</button>
+
+<button class="btn-gray" onclick="hapusSemuaSiswa()">
+🗑 Hapus Semua
+</button>
+
+</div>
+
+
+<!-- ABSENSI -->
+
+<div class="card">
+
+<h2>📅 Absensi Siswa</h2>
+
+<div>
+
+<label>Tanggal:</label>
+
+<input
+    type="date"
+    id="tanggal"
+    onchange="tampilkanAbsensi()">
+
+<select
+    id="filterKelas"
+    onchange="tampilkanAbsensi()">
+
+<option value="SEMUA">
+Semua Kelas
+</option>
+
+<option>X-1>X-1</option>
+<option>X-2>X-2</option>
+<option>X-3>X-3</option>
+<option>XI-1>XI-1</option>
+<option>XI-2>XI-2</option>
+<option>XI-3>XI-3</option>
+<option>XII-1>XII-1</option>
+<option>XII-2>XII-2</option>
+<option>XII-3>XII-3</option>
+
+</select>
+
+<input
+    type="text"
+    id="search"
+    placeholder="🔍 Cari nama siswa..."
+    onkeyup="tampilkanAbsensi()">
+
+</div>
+
+
+<div class="table-container">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>No</th>
+<th>NIS</th>
+<th>Nama Siswa</th>
+<th>Kelas</th>
+<th>Status Kehadiran</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tabelAbsensi">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- STATISTIK -->
+
+<div class="card">
+
+<h2>📊 Statistik Kehadiran</h2>
+
+<div class="statistik">
+
+<div class="stat hadir">
+
+<h3>Hadir</h3>
+
+<p id="jumlahHadir">0</p>
+
+</div>
+
+<div class="stat sakit">
+
+<h3>Sakit</h3>
+
+<p id="jumlahSakit">0</p>
+
+</div>
+
+<div class="stat izin">
+
+<h3>Izin</h3>
+
+<p id="jumlahIzin">0</p>
+
+</div>
+
+<div class="stat alpa">
+
+<h3>Alpa</h3>
+
+<p id="jumlahAlpa">0</p>
+
+</div>
+
+<div class="stat terlambat">
+
+<h3>Terlambat</h3>
+
+<p id="jumlahTerlambat">0</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- REKAP -->
+
+<div class="card">
+
+<h2>📋 Rekap Data Siswa</h2>
+
+<div class="table-container">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>No</th>
+<th>NIS</th>
+<th>Nama</th>
+<th>Kelas</th>
+<th>Hadir</th>
+<th>Sakit</th>
+<th>Izin</th>
+<th>Alpa</th>
+<th>Terlambat</th>
+<th>Aksi</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tabelRekap">
+
+</tbody>
+
+</table>
+
+</div>
+
+<br>
+
+<button onclick="cetakLaporan()">
+🖨 Cetak Laporan
+</button>
+
+<button class="btn-blue" onclick="exportCSV()">
+📥 Export CSV
+</button>
+
+<button class="btn-danger" onclick="logout()">
+🚪 Logout
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* ================= DATA ================= */
+
+let siswa = JSON.parse(
+    localStorage.getItem("dataSiswa")
+) || [];
+
+let absensi = JSON.parse(
+    localStorage.getItem("dataAbsensi")
+) || {};
+
+
+/* ================= LOGIN ================= */
+
+function login() {
+
+    let username =
+        document.getElementById("username").value;
+
+    let password =
+        document.getElementById("password").value;
+
+    if(username === "admin" && password === "12345") {
+
+        document.getElementById("loginPage")
+        .style.display = "none";
+
+        document.getElementById("app")
+        .style.display = "block";
+
+        setTanggalHariIni();
+
+        tampilkanAbsensi();
+
+        tampilkanRekap();
+
+    } else {
+
+        document.getElementById("loginError")
+        .innerText =
+        "Username atau password salah!";
+
+    }
+
+}
+
+
+/* ================= LOGOUT ================= */
+
+function logout() {
+
+    document.getElementById("app")
+    .style.display = "none";
+
+    document.getElementById("loginPage")
+    .style.display = "block";
+
+}
+
+
+/* ================= TANGGAL ================= */
+
+function setTanggalHariIni() {
+
+    let today =
+        new Date().toISOString().split("T")[0];
+
+    document.getElementById("tanggal")
+    .value = today;
+
+}
+
+
+/* ================= TAMBAH SISWA ================= */
+
+function tambahSiswa() {
+
+    let nis =
+        document.getElementById("nis").value.trim();
+
+    let nama =
+        document.getElementById("namaSiswa").value.trim();
+
+    let kelas =
+        document.getElementById("kelas").value;
+
+    if(!nis || !nama || !kelas) {
+
+        alert("Lengkapi data siswa!");
+
+        return;
+
+    }
+
+    let cek =
+        siswa.some(x => x.nis === nis);
+
+    if(cek) {
+
+        alert("NIS sudah terdaftar!");
+
+        return;
+
+    }
+
+    siswa.push({
+
+        nis: nis,
+        nama: nama,
+        kelas: kelas
+
+    });
+
+    localStorage.setItem(
+        "dataSiswa",
+        JSON.stringify(siswa)
+    );
+
+    document.getElementById("nis").value = "";
+
+    document.getElementById("namaSiswa").value = "";
+
+    document.getElementById("kelas").value = "";
+
+    tampilkanAbsensi();
+
+    tampilkanRekap();
+
+}
+
+
+/* ================= ABSENSI ================= */
+
+function tampilkanAbsensi() {
+
+    let tanggal =
+        document.getElementById("tanggal").value;
+
+    let filter =
+        document.getElementById("filterKelas").value;
+
+    let search =
+        document.getElementById("search").value
+        .toLowerCase();
+
+    let tbody =
+        document.getElementById("tabelAbsensi");
+
+    tbody.innerHTML = "";
+
+    let no = 1;
+
+    siswa.forEach((s) => {
+
+        if(
+            filter !== "SEMUA"
+            &&
+            s.kelas !== filter
+        ) return;
+
+        if(
+            !s.nama.toLowerCase()
+            .includes(search)
+        ) return;
+
+
+        if(!absensi[tanggal])
+            absensi[tanggal] = {};
+
+
+        if(!absensi[tanggal][s.nis]) {
+
+            absensi[tanggal][s.nis] =
+            "Hadir";
+
+        }
+
+
+        let tr =
+            document.createElement("tr");
+
+
+        tr.innerHTML = `
+
+        <td>${no++}</td>
+
+        <td>${s.nis}</td>
+
+        <td>${s.nama}</td>
+
+        <td>${s.kelas}</td>
+
+        <td>
+
+        <select
+        onchange="ubahStatus(
+        '${tanggal}',
+        '${s.nis}',
+        this.value
+        )">
+
+        <option
+        ${absensi[tanggal][s.nis] === "Hadir"
+        ? "selected":""}>
+        Hadir
+        </option>
+
+        <option
+        ${absensi[tanggal][s.nis] === "Sakit"
+        ? "selected":""}>
+        Sakit
+        </option>
+
+        <option
+        ${absensi[tanggal][s.nis] === "Izin"
+        ? "selected":""}>
+        Izin
+        </option>
+
+        <option
+        ${absensi[tanggal][s.nis] === "Alpa"
+        ? "selected":""}>
+        Alpa
+        </option>
+
+        <option
+        ${absensi[tanggal][s.nis] === "Terlambat"
+        ? "selected":""}>
+        Terlambat
+        </option>
+
+        </select>
+
+        </td>
+
+        `;
+
+        tbody.appendChild(tr);
+
+    });
+
+    localStorage.setItem(
+        "dataAbsensi",
+        JSON.stringify(absensi)
+    );
+
+    hitungStatistik(tanggal);
+
+}
+
+
+/* ================= UBAH STATUS ================= */
+
+function ubahStatus(
+    tanggal,
+    nis,
+    status
+) {
+
+    if(!absensi[tanggal])
+        absensi[tanggal] = {};
+
+    absensi[tanggal][nis] =
+        status;
+
+    localStorage.setItem(
+        "dataAbsensi",
+        JSON.stringify(absensi)
+    );
+
+    hitungStatistik(tanggal);
+
+    tampilkanRekap();
+
+}
+
+
+/* ================= STATISTIK ================= */
+
+function hitungStatistik(tanggal) {
+
+    let data =
+        absensi[tanggal] || {};
+
+    let jumlah = {
+
+        Hadir: 0,
+        Sakit: 0,
+        Izin: 0,
+        Alpa: 0,
+        Terlambat: 0
+
+    };
+
+    siswa.forEach(s => {
+
+        let status =
+            data[s.nis];
+
+        if(status)
+            jumlah[status]++;
+
+    });
+
+    document.getElementById(
+        "jumlahHadir"
+    ).innerText = jumlah.Hadir;
+
+    document.getElementById(
+        "jumlahSakit"
+    ).innerText = jumlah.Sakit;
+
+    document.getElementById(
+        "jumlahIzin"
+    ).innerText = jumlah.Izin;
+
+    document.getElementById(
+        "jumlahAlpa"
+    ).innerText = jumlah.Alpa;
+
+    document.getElementById(
+        "jumlahTerlambat"
+    ).innerText = jumlah.Terlambat;
+
+}
+
+
+/* ================= REKAP ================= */
+
+function tampilkanRekap() {
+
+    let tbody =
+        document.getElementById(
+            "tabelRekap"
+        );
+
+    tbody.innerHTML = "";
+
+    siswa.forEach((s, index) => {
+
+        let rekap = {
+
+            Hadir: 0,
+            Sakit: 0,
+            Izin: 0,
+            Alpa: 0,
+            Terlambat: 0
+
+        };
+
+        Object.values(absensi)
+        .forEach(harian => {
+
+            if(harian[s.nis]) {
+
+                rekap[
+                    harian[s.nis]
+                ]++;
+
+            }
+
+        });
+
+
+        let tr =
+            document.createElement("tr");
+
+
+        tr.innerHTML = `
+
+        <td>${index + 1}</td>
+
+        <td>${s.nis}</td>
+
+        <td>${s.nama}</td>
+
+        <td>${s.kelas}</td>
+
+        <td>${rekap.Hadir}</td>
+
+        <td>${rekap.Sakit}</td>
+
+        <td>${rekap.Izin}</td>
+
+        <td>${rekap.Alpa}</td>
+
+        <td>${rekap.Terlambat}</td>
+
+        <td>
+
+        <button
+        class="btn-warning"
+        onclick="editSiswa('${s.nis}')">
+        Edit
+        </button>
+
+        <button
+        class="btn-danger"
+        onclick="hapusSiswa('${s.nis}')">
+        Hapus
+        </button>
+
+        </td>
+
+        `;
+
+        tbody.appendChild(tr);
+
+    });
+
+}
+
+
+/* ================= EDIT ================= */
+
+function editSiswa(nis) {
+
+    let data =
+        siswa.find(x => x.nis === nis);
+
+    if(!data) return;
+
+    let namaBaru =
+        prompt(
+            "Nama siswa:",
+            data.nama
+        );
+
+    if(namaBaru) {
+
+        data.nama =
+            namaBaru;
+
+        localStorage.setItem(
+            "dataSiswa",
+            JSON.stringify(siswa)
+        );
+
+        tampilkanAbsensi();
+
+        tampilkanRekap();
+
+    }
+
+}
+
+
+/* ================= HAPUS ================= */
+
+function hapusSiswa(nis) {
+
+    if(!confirm(
+        "Hapus siswa ini?"
+    )) return;
+
+    siswa =
+        siswa.filter(
+            x => x.nis !== nis
+        );
+
+    localStorage.setItem(
+        "dataSiswa",
+        JSON.stringify(siswa)
+    );
+
+    tampilkanAbsensi();
+
+    tampilkanRekap();
+
+}
+
+
+/* ================= HAPUS SEMUA ================= */
+
+function hapusSemuaSiswa() {
+
+    if(!confirm(
+        "Yakin ingin menghapus semua data siswa?"
+    )) return;
+
+    siswa = [];
+
+    localStorage.removeItem(
+        "dataSiswa"
+    );
+
+    tampilkanAbsensi();
+
+    tampilkanRekap();
+
+}
+
+
+/* ================= CETAK ================= */
+
+function cetakLaporan() {
+
+    window.print();
+
+}
+
+
+/* ================= EXPORT CSV ================= */
+
+function exportCSV() {
+
+    let csv =
+        "NIS,Nama,Kelas,Hadir,Sakit,Izin,Alpa,Terlambat\n";
+
+
+    siswa.forEach(s => {
+
+        let rekap = {
+
+            Hadir: 0,
+            Sakit: 0,
+            Izin: 0,
+            Alpa: 0,
+            Terlambat: 0
+
+        };
+
+
+        Object.values(absensi)
+        .forEach(harian => {
+
+            if(harian[s.nis]) {
+
+                rekap[
+                    harian[s.nis]
+                ]++;
+
+            }
+
+        });
+
+
+        csv +=
+        `${s.nis},${s.nama},${s.kelas},` +
+        `${rekap.Hadir},` +
+        `${rekap.Sakit},` +
+        `${rekap.Izin},` +
+        `${rekap.Alpa},` +
+        `${rekap.Terlambat}\n`;
+
+    });
+
+
+    let blob =
+        new Blob(
+            [csv],
+            {type:"text/csv"}
+        );
+
+
+    let url =
+        URL.createObjectURL(blob);
+
+
+    let a =
+        document.createElement("a");
+
+    a.href = url;
+
+    a.download =
+        "rekap-absensi-siswa.csv";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+}
+
+</script>
+
+</body>
+</html>
+```
